@@ -1,0 +1,1 @@
+deno run --allow-run --allow-read --allow-write tasks/json_to_markdown/ScrapboxToObsidian/mod.ts nishio.json nishio
