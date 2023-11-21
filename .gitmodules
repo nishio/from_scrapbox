@@ -1,0 +1,3 @@
+[submodule "tasks/json_to_markdown/ScrapboxToObsidian"]
+	path = tasks/json_to_markdown/ScrapboxToObsidian
+	url = https://github.com/blu3mo/ScrapboxToObsidian
