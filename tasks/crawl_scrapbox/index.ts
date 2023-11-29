@@ -4,6 +4,7 @@
 import { readableStreamFromIterable } from "https://deno.land/std@0.166.0/streams/mod.ts";
 import { JsonStringifyStream } from "https://deno.land/std@0.166.0/encoding/json/stream.ts";
 import { parse } from "https://deno.land/std/flags/mod.ts";
+import { ensureDir } from "https://deno.land/std/fs/mod.ts";
 
 interface TitlePage {
   id: string;
@@ -14,8 +15,9 @@ interface TitlePage {
 
 const args = parse(Deno.args);
 const project = args.project ?? "villagepump";
-const outfile = args.outfile ?? "./data,json";
-const dist_stats = `./${project}/stats/pages.json`;
+const dist_data = `./crawl_data/${project}.jsonl`;
+const dist_stats = `./crawl_data/${project}/stat_pages.json`;
+ensureDir(`./crawl_data/${project}`);
 
 const pagesResponse = await fetch(
   `https://scrapbox.io/api/pages/${project}/?limit=1`
@@ -83,8 +85,7 @@ for (let i = 0; i < titles.length; i += skip) {
           pageTitle.title
         }"`
       );
-      const { id, title, created, updated, lines } = await res.json();
-      detailPages.push({ id, title, created, updated, lines });
+      detailPages.push(await res.json());
     });
   await Promise.all(promises);
   console.log(`Finish fetching ${i} - ${i + skip} pages.`);
@@ -93,7 +94,7 @@ for (let i = 0; i < titles.length; i += skip) {
 // JSON Lines形式でpagesを出力 - 出力処理後JSON形式に変換が必要
 const file = await Deno.open(dist_data, { create: true, write: true });
 readableStreamFromIterable(detailPages)
-  .pipeThrough(new JsonStringifyStream({ suffix: ",\n" })) // convert to JSON Text Sequences
+  .pipeThrough(new JsonStringifyStream({ suffix: "\n" })) // convert to JSON Text Sequences
   .pipeThrough(new TextEncoderStream()) // convert a string to a Uint8Array
   .pipeTo(file.writable)
   .then(() => console.log("write success"));
