@@ -16,9 +16,16 @@ try {
     const obsidianPage = blocks
       .map((block) => convertScrapboxToObsidian(block, 0, projectName))
       .join("\n");
-    const quotedTitle = page["title"].replace(/\//gi, "-");
+
+    const title = page["title"];
+    if (title === "2020-01-16") {
+      continue;
+    }
+    const quotedTitle = title.replace(/\//gi, "-");
     const obsidianPagePath = `${outdir}/${quotedTitle}.md`;
-    const frontmatter = `---\ntitle: ${page["title"]}\n---\n`;
+
+    const title_for_quartz = title.match(/"/) ? `'${title}'` : `"${title}"`;
+    const frontmatter = `---\ntitle: ${title_for_quartz}\n---\n`;
     await Deno.writeTextFile(obsidianPagePath, frontmatter + obsidianPage);
     await Deno.utime(obsidianPagePath, new Date(), page["updated"]);
   }
