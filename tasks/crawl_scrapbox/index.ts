@@ -3,6 +3,7 @@
 
 import { readableStreamFromIterable } from "https://deno.land/std@0.166.0/streams/mod.ts";
 import { JsonStringifyStream } from "https://deno.land/std@0.166.0/encoding/json/stream.ts";
+import { parse } from "https://deno.land/std/flags/mod.ts";
 
 interface TitlePage {
   id: string;
@@ -11,9 +12,10 @@ interface TitlePage {
   updated: number;
 }
 
-const project = "villagepump";
+const args = parse(Deno.args);
+const project = args.project ?? "villagepump";
+const outfile = args.outfile ?? "./data,json";
 const dist_stats = `./${project}/stats/pages.json`;
-const dist_data = "./data.json";
 
 const pagesResponse = await fetch(
   `https://scrapbox.io/api/pages/${project}/?limit=1`
