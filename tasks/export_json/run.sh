@@ -1,0 +1,1 @@
+python -m tasks.export_json.main
