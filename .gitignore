@@ -3,6 +3,11 @@ venv
 __pycache__
 *.py[cod]
 
+crawl_data/*.jsonl
+crawl_data/*/stat_pages.json
+
 # json_to_markdown
 obsidianPages
 quartzPages
+
+.DS_Store
