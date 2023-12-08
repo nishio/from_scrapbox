@@ -23,6 +23,10 @@ const pagesResponse = await fetch(
   `https://scrapbox.io/api/pages/${project}/?limit=1`
 );
 const pageNum = (await pagesResponse.json()).count;
+if (pageNum === undefined) {
+  Deno.exit(0);
+}
+
 const limitParam = 1000;
 const maxIndex = Math.floor(pageNum / 1000) + 1;
 
