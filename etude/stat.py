@@ -112,3 +112,39 @@ def stat4():
     sns.jointplot(x=np.log10(x), y=y, alpha=0.1, kind='scatter')
     plt.show()
     # sns.jointplot(x=np.log10(x), y=y, kind='kde')
+
+
+
+is_user = []
+is_collaborator = []
+is_user_or_collaborator = []
+is_in_icons = []
+from collections import defaultdict
+samples = defaultdict(list)
+for p in pages:
+    # is_user.append(p["user"]["id"] == nishio_user_id)
+    # is_collaborator.append(any(x["id"] == nishio_user_id for x in p["collaborators"]))
+    x = p["user"]["id"] == nishio_user_id or any(x["id"] == nishio_user_id for x in p["collaborators"])
+    # is_user_or_collaborator.append(x)
+    y = "nishio" in p["icons"]
+    # is_in_icons.append(y)
+    if x or y:
+        samples[(x, y)].append(p["title"])
+
+if 0:
+    import pandas as pd
+    pd.crosstab(is_user_or_collaborator, is_in_icons)
+    """
+    col_0  False  True 
+    row_0              
+    False  19155    491
+    True     827   2504
+    """
+
+print("user or collaborator, but not in icons")
+for v in samples[(True, False)][:10]:
+    print(v)
+
+print("in icons, but not user or collaborator")
+for v in samples[(False, True)][:10]:
+    print(v)
