@@ -12,7 +12,7 @@ SID = os.getenv("SID")
 PROJECT = os.getenv("PROJECT_NAME")
 
 
-def export_pages(project=PROJECT, metadata="false"):
+def export_pages(project=PROJECT, metadata=False):
     if isinstance(metadata, bool):
         metadata = str(metadata).lower()
     assert metadata in ["true", "false"]
