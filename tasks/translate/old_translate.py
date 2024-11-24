@@ -16,7 +16,6 @@ from langchain.schema.messages import SystemMessage
 from langchain.prompts import ChatPromptTemplate
 from langchain.chat_models import ChatOpenAI
 
-from . import simple_translate
 from utils.lang import contains_japanese_characters
 
 dotenv.load_dotenv()
@@ -231,78 +230,3 @@ def find_occurence(text, mapping):
         if k in text:
             occur[k] = v
     return occur
-
-
-def generate_initial_title_map():
-    data = json.load(open(in_file, "r"))
-    titles = [page["title"] for page in data["pages"]]
-    print(len(titles))
-    print(len([t for t in titles if contains_japanese_characters(t)]))
-    titles.sort()
-
-    title_map = {}
-    for title in tqdm(titles):
-        if not contains_japanese_characters(title):
-            continue
-        en_title = simple_translate.main(title)
-        title_map[title] = en_title
-
-    json.dump(title_map, open(title_map_file, "w"), ensure_ascii=False, indent=2)
-
-
-def stat1():
-    # title occurence count
-    data = json.load(open(in_file, "r"))
-    titles = [page["title"] for page in data["pages"]]
-    from collections import defaultdict
-
-    count = defaultdict(int)
-    for p in tqdm(data["pages"]):
-        text = "\n".join(p["lines"])
-        for title in titles:
-            # count[title] += text.count(title)
-            if title in text:
-                count[title] += 1
-
-    buf = [(v, k) for (k, v) in count.items()]
-    buf.sort(reverse=True)
-
-
-def stat2():
-    # title occurence count
-    data = json.load(open(in_file, "r"))
-    titles = [page["title"] for page in data["pages"]]
-    from collections import defaultdict
-
-    count = defaultdict(int)
-    for p in tqdm(data["pages"]):
-        text = "\n".join(p["lines"])
-        for title in titles:
-            # count[title] += text.count(title)
-            if title in text:
-                count[p["title"]] += 1
-
-    buf = [(v, k) for (k, v) in count.items()]
-    buf.sort(reverse=True)
-
-    buf2 = [(v, k) for (v, k) in buf if all(c not in k for c in "🌀🤖")]
-
-
-def add_link_to_title_map():
-    lines = open("crawl_data/nishio.jsonl").readlines()
-    pages = [json.loads(line) for line in lines]
-    links = set()
-    for page in pages:
-        links.update(page["links"])
-
-    title_map = json.load(open(title_map_file))
-
-    for link in tqdm(links):
-        if link in title_map:
-            continue
-        if not contains_japanese_characters(link):
-            continue
-        en_link = simple_translate.main(link)
-        title_map[link] = en_link
-
-    json.dump(title_map, open(title_map_file, "w"), ensure_ascii=False, indent=2)

@@ -1,3 +1,6 @@
+"""
+Simple translation, especially for title translation.
+"""
 import openai
 import dotenv
 import os
