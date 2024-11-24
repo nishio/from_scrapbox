@@ -24,7 +24,19 @@ try {
     const quotedTitle = title.replace(/\//gi, "-");
     const obsidianPagePath = `${outdir}/${quotedTitle}.md`;
 
-    const title_for_quartz = title.match(/"/) ? `'${title}'` : `"${title}"`;
+    // YAMLで使用するためにタイトルをエスケープ
+    const escapeYamlString = (str: string): string => {
+      if (str.includes('"')) {
+        // ダブルクォートを含む場合はシングルクォートで囲み、シングルクォートをエスケープ
+        return `'${str.replace(/'/g, "''")}'`;
+      } else {
+        // それ以外はダブルクォートで囲み、ダブルクォートをエスケープ
+        return `"${str.replace(/"/g, '\\"')}"`;
+      }
+    };
+
+    const title_for_quartz = escapeYamlString(title);
+
     const frontmatter = `---\ntitle: ${title_for_quartz}\n---\n`;
     await Deno.writeTextFile(obsidianPagePath, frontmatter + obsidianPage);
     await Deno.utime(obsidianPagePath, new Date(), page["updated"]);
