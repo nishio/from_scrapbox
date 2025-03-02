@@ -1,0 +1,41 @@
+name: Update Markdown Files
+
+on:
+  schedule:
+    # 毎日JST AM5:00（UTC 20:00）に実行
+    - cron: '0 20 * * *'
+  # 手動トリガー
+  workflow_dispatch:
+
+jobs:
+  update-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Run update script
+        run: |
+          bash tasks/update_markdown/run.sh
