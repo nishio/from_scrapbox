@@ -39,3 +39,5 @@ jobs:
       - name: Run update script
         run: |
           bash tasks/update_markdown/run.sh
+        env:
+          SID: ${{ secrets.SID }}
