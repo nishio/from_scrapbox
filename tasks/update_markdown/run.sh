@@ -32,7 +32,7 @@ mkdir -p external_brain_in_markdown/pages
 
 # Markdown ファイルをコピー
 echo "Markdown ファイルを external_brain_in_markdown/pages にコピーします"
-cp -r obsidianPages/* external_brain_in_markdown/pages/
+cp -r quartzPages/* external_brain_in_markdown/pages/
 
 # 変更をコミットしてプッシュ
 cd external_brain_in_markdown
