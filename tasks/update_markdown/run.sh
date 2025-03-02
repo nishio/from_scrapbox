@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e  # エラーが発生したらスクリプトを終了
+
 # export from https://scrapbox.io/nishio to nishio.json
 python -m tasks.export_json.main
 
