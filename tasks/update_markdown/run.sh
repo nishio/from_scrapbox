@@ -11,6 +11,12 @@ deno run --allow-run --allow-read --allow-write tasks/json_to_markdown/mod.ts ni
 # external_brain_in_markdown リポジトリの処理
 echo "external_brain_in_markdown リポジトリを処理します..."
 
+# Git認証情報ヘルパーの設定（ローカル環境の場合）
+if [ -z "$GITHUB_TOKEN" ] && [ -z "$GITHUB_ACTIONS" ]; then
+  echo "Git認証情報ヘルパーを設定します"
+  git config --global credential.helper store
+fi
+
 # リポジトリのクローン（存在しない場合）またはプル（存在する場合）
 if [ -d "external_brain_in_markdown" ]; then
   echo "既存の external_brain_in_markdown リポジトリを更新します"
@@ -43,6 +49,7 @@ git commit -m "Update Markdown files from Scrapbox export $(date '+%Y-%m-%d %H:%
 if [ -n "$GITHUB_TOKEN" ]; then
   git push https://x-access-token:${GITHUB_TOKEN}@github.com/nishio/external_brain_in_markdown.git
 else
+  # 認証情報ヘルパーが設定されているので通常のプッシュでOK
   git push
 fi
 

@@ -49,3 +49,4 @@ jobs:
           bash tasks/update_markdown/run.sh
         env:
           SID: ${{ secrets.SID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
