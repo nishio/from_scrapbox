@@ -42,8 +42,8 @@ cp -r quartzPages/* external_brain_in_markdown/pages/
 
 # 変更をコミットしてプッシュ
 cd external_brain_in_markdown
-git add pages/
-git commit -m "Update Markdown files from Scrapbox export $(date '+%Y-%m-%d %H:%M:%S')"
+git add --quiet pages/
+git commit --quiet --no-status -m "Update Markdown files from Scrapbox export $(date '+%Y-%m-%d %H:%M:%S')"
 
 # GitHub Actions の場合は GITHUB_TOKEN を使用
 if [ -n "$GITHUB_TOKEN" ]; then
