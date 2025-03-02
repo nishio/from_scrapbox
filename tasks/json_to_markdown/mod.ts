@@ -12,9 +12,14 @@ try {
   const projectJson = JSON.parse(projectFile);
   const pages = projectJson["pages"];
   for (const page of pages) {
-    const blocks = parse(page["lines"].join("\n"));
+    const blockString =
+      typeof page["lines"][0] === "string"
+        ? page["lines"].join("\n") // linesが文字列の配列の場合
+        : page["lines"].map((line: { text: string }) => line.text).join("\n"); // linesがオブジェクトの場合
+
+    const blocks = parse(blockString);
     const obsidianPage = blocks
-      .map((block) => convertScrapboxToObsidian(block, 0, projectName))
+      .map((block: unknown) => convertScrapboxToObsidian(block, 0, projectName))
       .join("\n");
 
     const title = page["title"];
