@@ -1,0 +1,52 @@
+name: Update Qualia-san Markdown Files
+
+on:
+  schedule:
+    # 毎日JST AM6:00（UTC 21:00）に実行（他のワークフローと時間をずらす）
+    - cron: '0 21 * * *'
+  # 手動トリガー
+  workflow_dispatch:
+
+jobs:
+  update-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'  # サブモジュールを再帰的にチェックアウト
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+      - name: Debug Submodule
+        run: |
+          echo "Checking if ScrapboxToObsidian directory exists"
+          ls -la tasks/json_to_markdown/
+          echo "Checking if convert.js exists"
+          ls -la tasks/json_to_markdown/ScrapboxToObsidian/
+
+      - name: Run update script for Qualia-san version
+        run: |
+          bash tasks/update_markdown_qualia_san/run.sh
+        env:
+          SID: ${{ secrets.SID }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
