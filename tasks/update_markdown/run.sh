@@ -44,14 +44,19 @@ cp -r quartzPages/* external_brain_in_markdown/pages/
 cd external_brain_in_markdown
 # 出力を /dev/null にリダイレクトして抑制
 git add pages/ > /dev/null 2>&1
-git commit --quiet --no-status -m "Update Markdown files from Scrapbox export $(date '+%Y-%m-%d %H:%M:%S')"
 
-# GitHub Actions の場合は GITHUB_TOKEN を使用
-if [ -n "$GITHUB_TOKEN" ]; then
-  git push https://x-access-token:${GITHUB_TOKEN}@github.com/nishio/external_brain_in_markdown.git
+if git diff --cached --quiet; then
+  echo "変更なし。コミットとプッシュをスキップします"
 else
-  # 認証情報ヘルパーが設定されているので通常のプッシュでOK
-  git push
+  git commit --quiet --no-status -m "Update Markdown files from Scrapbox export $(date '+%Y-%m-%d %H:%M:%S')"
+  
+  # GitHub Actions の場合は GITHUB_TOKEN を使用
+  if [ -n "$GITHUB_TOKEN" ]; then
+    git push https://x-access-token:${GITHUB_TOKEN}@github.com/nishio/external_brain_in_markdown.git
+  else
+    # 認証情報ヘルパーが設定されているので通常のプッシュでOK
+    git push
+  fi
 fi
 
 cd ..

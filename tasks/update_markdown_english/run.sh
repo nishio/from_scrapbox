@@ -32,12 +32,17 @@ cp -r quartzPages/* external_brain_in_markdown_english/pages/
 
 cd external_brain_in_markdown_english
 git add pages/ > /dev/null 2>&1
-git commit --quiet --no-status -m "Update English Markdown files from Scrapbox export $(date '+%Y-%m-%d %H:%M:%S')"
 
-if [ -n "$GITHUB_TOKEN" ]; then
-  git push https://x-access-token:${GITHUB_TOKEN}@github.com/nishio/external_brain_in_markdown_english.git
+if git diff --cached --quiet; then
+  echo "変更なし。コミットとプッシュをスキップします"
 else
-  git push
+  git commit --quiet --no-status -m "Update English Markdown files from Scrapbox export $(date '+%Y-%m-%d %H:%M:%S')"
+  
+  if [ -n "$GITHUB_TOKEN" ]; then
+    git push https://x-access-token:${GITHUB_TOKEN}@github.com/nishio/external_brain_in_markdown_english.git
+  else
+    git push
+  fi
 fi
 
 cd ..
