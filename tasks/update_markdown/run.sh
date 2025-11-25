@@ -36,9 +36,9 @@ fi
 # pages ディレクトリが存在することを確認
 mkdir -p external_brain_in_markdown/pages
 
-# Markdown ファイルをコピー
+# Markdown ファイルをコピー（rsyncを使用してArgument list too longエラーを回避）
 echo "Markdown ファイルを external_brain_in_markdown/pages にコピーします"
-cp -r quartzPages/* external_brain_in_markdown/pages/
+rsync -a --delete quartzPages/ external_brain_in_markdown/pages/
 
 # 変更をコミットしてプッシュ
 cd external_brain_in_markdown
