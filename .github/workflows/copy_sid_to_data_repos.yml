@@ -1,0 +1,32 @@
+name: Copy SID to data repositories
+
+on:
+  workflow_dispatch:
+
+jobs:
+  copy-sid:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy SID secret
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+          SID: ${{ secrets.SID }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::Missing PAT repository secret."
+            exit 1
+          fi
+
+          if [ -z "$SID" ]; then
+            echo "::error::Missing SID repository secret."
+            exit 1
+          fi
+
+          for repo in \
+            nishio/external_brain_in_markdown \
+            nishio/external_brain_in_markdown_english
+          do
+            printf '%s' "$SID" | gh secret set SID --repo "$repo" --body-file -
+          done
