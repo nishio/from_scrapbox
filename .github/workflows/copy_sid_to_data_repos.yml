@@ -28,5 +28,5 @@ jobs:
             nishio/external_brain_in_markdown \
             nishio/external_brain_in_markdown_english
           do
-            printf '%s' "$SID" | gh secret set SID --repo "$repo" --body-file -
+            printf '%s' "$SID" | gh secret set SID --repo "$repo"
           done
